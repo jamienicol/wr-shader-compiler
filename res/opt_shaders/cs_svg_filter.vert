@@ -32,7 +32,7 @@ void main ()
   highp ivec2 tmpvar_3;
   highp uint tmpvar_4;
   tmpvar_4 = uint(aFilterRenderTaskAddress);
-  tmpvar_3.x = int((2u * (uint(mod (tmpvar_4, 512u)))));
+  tmpvar_3.x = int((2u * (uint(tmpvar_4 % 512u))));
   tmpvar_3.y = int((tmpvar_4 / 512u));
   highp vec4 tmpvar_5;
   tmpvar_5 = texelFetch (sRenderTasks, tmpvar_3, 0);
@@ -48,7 +48,7 @@ void main ()
     highp ivec2 tmpvar_10;
     highp uint tmpvar_11;
     tmpvar_11 = uint(aFilterInput1TaskAddress);
-    tmpvar_10.x = int((2u * (uint(mod (tmpvar_11, 512u)))));
+    tmpvar_10.x = int((2u * (uint(tmpvar_11 % 512u))));
     tmpvar_10.y = int((tmpvar_11 / 512u));
     highp vec4 tmpvar_12;
     tmpvar_12 = texelFetch (sRenderTasks, tmpvar_10, 0);
@@ -74,7 +74,7 @@ void main ()
     highp ivec2 tmpvar_17;
     highp uint tmpvar_18;
     tmpvar_18 = uint(aFilterInput2TaskAddress);
-    tmpvar_17.x = int((2u * (uint(mod (tmpvar_18, 512u)))));
+    tmpvar_17.x = int((2u * (uint(tmpvar_18 % 512u))));
     tmpvar_17.y = int((tmpvar_18 / 512u));
     highp vec4 tmpvar_19;
     tmpvar_19 = texelFetch (sRenderTasks, tmpvar_17, 0);

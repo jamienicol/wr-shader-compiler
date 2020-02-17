@@ -109,10 +109,10 @@ void main ()
         highp int address_19;
         address_19 = ((flat_varying_ivec4_0.y + offset_15) + (k_14 / 4));
         highp ivec2 tmpvar_20;
-        tmpvar_20.x = int((uint(mod (uint(address_19), 1024u))));
+        tmpvar_20.x = int((uint(uint(address_19) % 1024u)));
         tmpvar_20.y = int((uint(address_19) / 1024u));
         highp float tmpvar_21;
-        tmpvar_21 = clamp (texelFetch (sGpuCache, tmpvar_20, 0)[(int(mod (k_14, 4)))], 0.0, 1.0);
+        tmpvar_21 = clamp (texelFetch (sGpuCache, tmpvar_20, 0)[(int(k_14 % 4))], 0.0, 1.0);
         colora_12[i_13] = tmpvar_21;
         offset_15 += 64;
         tmpvar_17 = bool(1);
@@ -123,7 +123,7 @@ void main ()
         highp int address_22;
         address_22 = (flat_varying_ivec4_0.y + offset_15);
         highp ivec2 tmpvar_23;
-        tmpvar_23.x = int((uint(mod (uint(address_22), 1024u))));
+        tmpvar_23.x = int((uint(uint(address_22) % 1024u)));
         tmpvar_23.y = int((uint(address_22) / 1024u));
         highp vec4 tmpvar_24;
         tmpvar_24 = texelFetch (sGpuCache, tmpvar_23, 0);
@@ -139,7 +139,7 @@ void main ()
         highp int address_25;
         address_25 = (flat_varying_ivec4_0.y + offset_15);
         highp ivec2 tmpvar_26;
-        tmpvar_26.x = int((uint(mod (uint(address_25), 1024u))));
+        tmpvar_26.x = int((uint(uint(address_25) % 1024u)));
         tmpvar_26.y = int((uint(address_25) / 1024u));
         highp vec4 tmpvar_27;
         tmpvar_27 = texelFetch (sGpuCache, tmpvar_26, 0);

@@ -26,9 +26,9 @@ void main ()
   highp int tmpvar_4;
   tmpvar_4 = (aTransformIds.x & 16777215);
   highp ivec2 tmpvar_5;
-  tmpvar_5.x = int((8u * (uint(mod (
+  tmpvar_5.x = int((8u * (uint(
     uint(tmpvar_4)
-  , 128u)))));
+   % 128u))));
   tmpvar_5.y = int((uint(tmpvar_4) / 128u));
   tmpvar_2[0] = texelFetch (sTransformPalette, tmpvar_5, 0);
   tmpvar_2[1] = texelFetch (sTransformPalette, (tmpvar_5 + ivec2(1, 0)), 0);
@@ -42,9 +42,9 @@ void main ()
   highp int tmpvar_7;
   tmpvar_7 = (aTransformIds.y & 16777215);
   highp ivec2 tmpvar_8;
-  tmpvar_8.x = int((8u * (uint(mod (
+  tmpvar_8.x = int((8u * (uint(
     uint(tmpvar_7)
-  , 128u)))));
+   % 128u))));
   tmpvar_8.y = int((uint(tmpvar_7) / 128u));
   tmpvar_6[0] = texelFetch (sTransformPalette, tmpvar_8, 0);
   tmpvar_6[1] = texelFetch (sTransformPalette, (tmpvar_8 + ivec2(1, 0)), 0);

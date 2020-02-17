@@ -17,7 +17,7 @@ void main ()
   highp ivec2 tmpvar_1;
   highp uint tmpvar_2;
   tmpvar_2 = uint(aBlurRenderTaskAddress);
-  tmpvar_1.x = int((2u * (uint(mod (tmpvar_2, 512u)))));
+  tmpvar_1.x = int((2u * (uint(tmpvar_2 % 512u))));
   tmpvar_1.y = int((tmpvar_2 / 512u));
   highp vec4 tmpvar_3;
   tmpvar_3 = texelFetch (sRenderTasks, tmpvar_1, 0);
@@ -26,7 +26,7 @@ void main ()
   highp ivec2 tmpvar_5;
   highp uint tmpvar_6;
   tmpvar_6 = uint(aBlurSourceTaskAddress);
-  tmpvar_5.x = int((2u * (uint(mod (tmpvar_6, 512u)))));
+  tmpvar_5.x = int((2u * (uint(tmpvar_6 % 512u))));
   tmpvar_5.y = int((tmpvar_6 / 512u));
   highp vec4 tmpvar_7;
   tmpvar_7 = texelFetch (sRenderTasks, tmpvar_5, 0);

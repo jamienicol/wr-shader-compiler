@@ -33,7 +33,7 @@ void main ()
   highp ivec2 tmpvar_11;
   highp uint tmpvar_12;
   tmpvar_12 = uint(aData.x);
-  tmpvar_11.x = int((2u * (uint(mod (tmpvar_12, 512u)))));
+  tmpvar_11.x = int((2u * (uint(tmpvar_12 % 512u))));
   tmpvar_11.y = int((tmpvar_12 / 512u));
   highp vec4 tmpvar_13;
   tmpvar_13 = texelFetch (sPrimitiveHeadersF, tmpvar_11, 0);
@@ -44,7 +44,7 @@ void main ()
   tmpvar_15 = tmpvar_13.xy;
   tmpvar_16 = tmpvar_13.zw;
   highp ivec2 tmpvar_17;
-  tmpvar_17.x = int((2u * (uint(mod (tmpvar_12, 512u)))));
+  tmpvar_17.x = int((2u * (uint(tmpvar_12 % 512u))));
   tmpvar_17.y = int((tmpvar_12 / 512u));
   highp ivec4 tmpvar_18;
   tmpvar_18 = texelFetch (sPrimitiveHeadersI, tmpvar_17, 0);
@@ -59,7 +59,7 @@ void main ()
     highp int tmpvar_20;
     tmpvar_20 = ((tmpvar_18.y + 2) + (tmpvar_6 * 2));
     highp ivec2 tmpvar_21;
-    tmpvar_21.x = int((uint(mod (uint(tmpvar_20), 1024u))));
+    tmpvar_21.x = int((uint(uint(tmpvar_20) % 1024u)));
     tmpvar_21.y = int((uint(tmpvar_20) / 1024u));
     highp vec4 tmpvar_22;
     tmpvar_22 = texelFetch (sGpuCache, tmpvar_21, 0);
@@ -68,9 +68,9 @@ void main ()
     segment_data_4 = texelFetch (sGpuCache, (tmpvar_21 + ivec2(1, 0)), 0);
   };
   highp ivec2 tmpvar_23;
-  tmpvar_23.x = int((2u * (uint(mod (
+  tmpvar_23.x = int((2u * (uint(
     uint(tmpvar_5)
-  , 512u)))));
+   % 512u))));
   tmpvar_23.y = int((uint(tmpvar_5) / 512u));
   highp vec4 tmpvar_24;
   tmpvar_24 = texelFetch (sRenderTasks, tmpvar_23, 0);
@@ -80,9 +80,9 @@ void main ()
   highp int tmpvar_27;
   tmpvar_27 = (tmpvar_18.z & 16777215);
   highp ivec2 tmpvar_28;
-  tmpvar_28.x = int((8u * (uint(mod (
+  tmpvar_28.x = int((8u * (uint(
     uint(tmpvar_27)
-  , 128u)))));
+   % 128u))));
   tmpvar_28.y = int((uint(tmpvar_27) / 128u));
   tmpvar_26[0] = texelFetch (sTransformPalette, tmpvar_28, 0);
   tmpvar_26[1] = texelFetch (sTransformPalette, (tmpvar_28 + ivec2(1, 0)), 0);
@@ -143,7 +143,7 @@ void main ()
     tmpvar_1 = tmpvar_40;
   };
   highp ivec2 tmpvar_46;
-  tmpvar_46.x = int((uint(mod (uint(tmpvar_18.y), 1024u))));
+  tmpvar_46.x = int((uint(uint(tmpvar_18.y) % 1024u)));
   tmpvar_46.y = int((uint(tmpvar_18.y) / 1024u));
   highp vec4 tmpvar_47;
   highp vec4 tmpvar_48;

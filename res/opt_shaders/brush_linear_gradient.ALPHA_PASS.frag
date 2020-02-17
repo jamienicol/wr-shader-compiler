@@ -39,7 +39,7 @@ void main ()
     int(floor(x_7))
   ), 0, 258));
   highp ivec2 tmpvar_9;
-  tmpvar_9.x = int((uint(mod (uint(address_8), 1024u))));
+  tmpvar_9.x = int((uint(uint(address_8) % 1024u)));
   tmpvar_9.y = int((uint(address_8) / 1024u));
   color_2 = mix (texelFetch (sGpuCache, tmpvar_9, 0), texelFetch (sGpuCache, (tmpvar_9 + ivec2(1, 0)), 0), fract(x_7));
   vec2 tmpvar_10;

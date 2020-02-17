@@ -24,7 +24,7 @@ void main ()
   highp ivec2 tmpvar_7;
   highp uint tmpvar_8;
   tmpvar_8 = uint(aData.x);
-  tmpvar_7.x = int((2u * (uint(mod (tmpvar_8, 512u)))));
+  tmpvar_7.x = int((2u * (uint(tmpvar_8 % 512u))));
   tmpvar_7.y = int((tmpvar_8 / 512u));
   highp vec4 tmpvar_9;
   tmpvar_9 = texelFetch (sPrimitiveHeadersF, tmpvar_7, 0);
@@ -35,7 +35,7 @@ void main ()
   tmpvar_11 = tmpvar_9.xy;
   tmpvar_12 = tmpvar_9.zw;
   highp ivec2 tmpvar_13;
-  tmpvar_13.x = int((2u * (uint(mod (tmpvar_8, 512u)))));
+  tmpvar_13.x = int((2u * (uint(tmpvar_8 % 512u))));
   tmpvar_13.y = int((tmpvar_8 / 512u));
   highp ivec4 tmpvar_14;
   tmpvar_14 = texelFetch (sPrimitiveHeadersI, tmpvar_13, 0);
@@ -49,7 +49,7 @@ void main ()
     highp int tmpvar_16;
     tmpvar_16 = ((tmpvar_14.y + 1) + (tmpvar_4 * 2));
     highp ivec2 tmpvar_17;
-    tmpvar_17.x = int((uint(mod (uint(tmpvar_16), 1024u))));
+    tmpvar_17.x = int((uint(uint(tmpvar_16) % 1024u)));
     tmpvar_17.y = int((uint(tmpvar_16) / 1024u));
     highp vec4 tmpvar_18;
     tmpvar_18 = texelFetch (sGpuCache, tmpvar_17, 0);
@@ -57,9 +57,9 @@ void main ()
     tmpvar_1 = (tmpvar_18.xy + tmpvar_9.xy);
   };
   highp ivec2 tmpvar_19;
-  tmpvar_19.x = int((2u * (uint(mod (
+  tmpvar_19.x = int((2u * (uint(
     uint(tmpvar_3)
-  , 512u)))));
+   % 512u))));
   tmpvar_19.y = int((uint(tmpvar_3) / 512u));
   highp vec4 tmpvar_20;
   tmpvar_20 = texelFetch (sRenderTasks, tmpvar_19, 0);
@@ -69,9 +69,9 @@ void main ()
   highp int tmpvar_23;
   tmpvar_23 = (tmpvar_14.z & 16777215);
   highp ivec2 tmpvar_24;
-  tmpvar_24.x = int((8u * (uint(mod (
+  tmpvar_24.x = int((8u * (uint(
     uint(tmpvar_23)
-  , 128u)))));
+   % 128u))));
   tmpvar_24.y = int((uint(tmpvar_23) / 128u));
   tmpvar_22[0] = texelFetch (sTransformPalette, tmpvar_24, 0);
   tmpvar_22[1] = texelFetch (sTransformPalette, (tmpvar_24 + ivec2(1, 0)), 0);
@@ -128,7 +128,7 @@ void main ()
     vTransformBounds = mix (tmpvar_39, tmpvar_40, tmpvar_29);
   };
   highp ivec2 tmpvar_41;
-  tmpvar_41.x = int((uint(mod (uint(tmpvar_14.y), 1024u))));
+  tmpvar_41.x = int((uint(uint(tmpvar_14.y) % 1024u)));
   tmpvar_41.y = int((uint(tmpvar_14.y) / 1024u));
   flat_varying_vec4_0 = (texelFetch (sGpuCache, tmpvar_41, 0) * (float(tmpvar_15.x) / 65535.0));
 }

@@ -1220,7 +1220,7 @@ void main ()
         lowp ivec2 address_158;
         address_158 = (vData.xy + tmpvar_157);
         highp float tmpvar_159;
-        tmpvar_159 = clamp (texelFetch (sGpuCache, address_158, 0)[(int(mod (k_152, 4)))], 0.0, 1.0);
+        tmpvar_159 = clamp (texelFetch (sGpuCache, address_158, 0)[(int(k_152 % 4))], 0.0, 1.0);
         colora_150[i_151] = tmpvar_159;
         offset_153 += 64;
         tmpvar_155 = bool(1);

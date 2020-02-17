@@ -20,7 +20,7 @@ void main ()
     int(floor(x_2))
   ), 0, 258));
   highp ivec2 tmpvar_4;
-  tmpvar_4.x = int((uint(mod (uint(address_3), 1024u))));
+  tmpvar_4.x = int((uint(uint(address_3) % 1024u)));
   tmpvar_4.y = int((uint(address_3) / 1024u));
   oFragColor = mix (texelFetch (sGpuCache, tmpvar_4, 0), texelFetch (sGpuCache, (tmpvar_4 + ivec2(1, 0)), 0), fract(x_2));
 }
