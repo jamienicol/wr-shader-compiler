@@ -10,8 +10,9 @@ opengles_version_major = 3
 opengles_version_minor = 0
 
 [dependencies]
-glow = "0.4.0"
-glutin = "0.22.0"
+gleam = "0.6.17"
+glutin = "0.21.0"
+lazy_static = "1"
 
 # Running wrench on android built with master cargo-apk results in a crash
 # due to a mismatched version of android_glue (a dependency of winit).

@@ -1,51 +1,44 @@
-use glow::{Context, HasContext};
-use glutin::{
-    ContextBuilder,
-    dpi::LogicalSize,
-    event::{Event, WindowEvent},
-    event_loop::{ControlFlow, EventLoop},
-    window::WindowBuilder,
-};
+use gleam::gl;
+use glutin::{Api, ContextBuilder, ControlFlow, Event, EventsLoop, GlRequest, WindowBuilder, WindowEvent};
 
 fn main() {
-    let event_loop = EventLoop::new();
-    let window_builder = WindowBuilder::new()
-        .with_title("Shader Compiler")
-        .with_inner_size(LogicalSize::new(800, 600));
-    let windowed_context = ContextBuilder::new()
-        .with_vsync(true)
-        .build_windowed(window_builder, &event_loop)
-        .unwrap();
-    let windowed_context = unsafe { windowed_context.make_current().unwrap() };
-    let gl = Context::from_loader_function(|s| {
-        windowed_context.get_proc_address(s) as *const _
-    });
+    let mut event_loop = EventsLoop::new();
+    let wb = WindowBuilder::new().with_title("Hello GL!");
 
-    unsafe {
-        gl.clear_color(0.0, 0.0, 0.0, 1.0);
-    }
-    event_loop.run(move |event, _, control_flow| {
-        *control_flow = ControlFlow::Wait;
+    let context = ContextBuilder::new()
+        .with_gl(GlRequest::Specific(Api::OpenGlEs, (3, 0)))
+        .build_windowed(wb, &event_loop)
+        .unwrap();
+
+    let context = unsafe { context.make_current().unwrap() };
+
+    let gl = unsafe { gl::GlesFns::load_with(|s| context.get_proc_address(s) as *const _) };
+    // let gl = gl::ErrorReactingGl::wrap(gl, move |_gl, fun, err| {
+    //     println!("Error 0x{:x} in {}", err, fun);
+    // });
+    gl.clear_color(0.0, 0.0, 0.0, 1.0);
+
+    println!("Vendor: {}", gl.get_string(gl::VENDOR));
+    println!("Renderer: {}", gl.get_string(gl::RENDERER));
+    println!("Version: {}", gl.get_string(gl::VERSION));
+
+    event_loop.run_forever(|event| {
         match event {
-            Event::LoopDestroyed => {
-                return;
-            },
-            Event::MainEventsCleared => {
-                windowed_context.window().request_redraw();
-            }
-            Event::RedrawRequested(_) => {
-                unsafe {
-                    gl.clear(glow::COLOR_BUFFER_BIT);
-                    windowed_context.swap_buffers().unwrap();
-                }
-            }
             Event::WindowEvent { ref event, .. } => match event {
-                WindowEvent::CloseRequested => {
-                    *control_flow = ControlFlow::Exit;
+                WindowEvent::Resized(logical_size) => {
+                    let dpi_factor = context.window().get_hidpi_factor();
+                    context.resize(logical_size.to_physical(dpi_factor));
                 }
-                _ => {}
-            }
-            _ => {}
+                WindowEvent::Refresh => {
+                    gl.clear(gl::COLOR_BUFFER_BIT);
+                    context.swap_buffers().unwrap();
+                }
+                WindowEvent::CloseRequested => return ControlFlow::Break,
+                _ => (),
+            },
+            _ => (),
         }
+
+        return ControlFlow::Continue;
     })
 }
