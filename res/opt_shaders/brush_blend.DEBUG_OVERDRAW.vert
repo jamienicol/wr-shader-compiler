@@ -1,4 +1,4 @@
-#version 300 es
+#version 310 es
 precision highp sampler2DArray;
 uniform mat4 uTransform;
 in vec3 aPosition;

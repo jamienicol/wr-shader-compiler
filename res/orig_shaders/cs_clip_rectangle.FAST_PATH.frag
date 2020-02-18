@@ -1,4 +1,4 @@
-#version 300 es
+#version 310 es
 // cs_clip_rectangle
 #define WR_FRAGMENT_SHADER
 #define WR_MAX_VERTEX_TEXTURE_WIDTH 1024U

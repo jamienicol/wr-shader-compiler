@@ -1,4 +1,4 @@
-#version 300 es
+#version 310 es
 // brush_linear_gradient
 #define WR_VERTEX_SHADER
 #define WR_MAX_VERTEX_TEXTURE_WIDTH 1024U
