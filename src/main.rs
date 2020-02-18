@@ -80,18 +80,33 @@ fn main() {
     println!("Renderer: {}", gl.get_string(gl::RENDERER));
     println!("Version: {}", gl.get_string(gl::VERSION));
 
+    println!("\n");
     println!("Compiling unoptimised shaders");
     for shader in shader_source::ORIG_SHADERS.iter() {
         compile_shader(gl.as_ref(), &shader);
     }
 
+    println!("\n");
     println!("Compiling optimised shaders");
     for shader in shader_source::OPT_SHADERS.iter() {
         compile_shader(gl.as_ref(), &shader);
     }
 
+    println!("\n");
     println!("Compiling SPIRV-Cross shaders");
     for shader in shader_source::SPVC_SHADERS.iter() {
+        compile_shader(gl.as_ref(), &shader);
+    }
+
+    println!("\n");
+    println!("Compiling SPIRV-Cross (Perf) shaders");
+    for shader in shader_source::SPVC_PERF_SHADERS.iter() {
+        compile_shader(gl.as_ref(), &shader);
+    }
+
+    println!("\n");
+    println!("Compiling SPIRV-Cross (Size) shaders");
+    for shader in shader_source::SPVC_SIZE_SHADERS.iter() {
         compile_shader(gl.as_ref(), &shader);
     }
 

@@ -63,6 +63,30 @@ fn main() {
     }
     spvc_shaders.sort_by(|a, b| a.file_name().cmp(&b.file_name()));
 
+    let mut spvc_perf_shaders = Vec::new();
+    let orig_shaders_dir = Path::new("res/spvc_perf_shaders");
+    for entry in read_dir(orig_shaders_dir).unwrap() {
+        let entry = entry.unwrap();
+        let path = entry.path();
+
+        if entry.file_name().to_str().unwrap().ends_with(".vert") {
+            spvc_perf_shaders.push(path.to_owned());
+        }
+    }
+    spvc_perf_shaders.sort_by(|a, b| a.file_name().cmp(&b.file_name()));
+
+    let mut spvc_size_shaders = Vec::new();
+    let orig_shaders_dir = Path::new("res/spvc_size_shaders");
+    for entry in read_dir(orig_shaders_dir).unwrap() {
+        let entry = entry.unwrap();
+        let path = entry.path();
+
+        if entry.file_name().to_str().unwrap().ends_with(".vert") {
+            spvc_size_shaders.push(path.to_owned());
+        }
+    }
+    spvc_size_shaders.sort_by(|a, b| a.file_name().cmp(&b.file_name()));
+
     let out_dir = env::var_os("OUT_DIR").unwrap();
     let shader_file_path = Path::new(&out_dir).join("shaders.rs");
     let mut shader_file = File::create(shader_file_path).unwrap();
@@ -72,5 +96,7 @@ fn main() {
     write_shaders(&mut shader_file, "ORIG_SHADERS", orig_shaders);
     write_shaders(&mut shader_file, "OPT_SHADERS", opt_shaders);
     write_shaders(&mut shader_file, "SPVC_SHADERS", spvc_shaders);
+    write_shaders(&mut shader_file, "SPVC_PERF_SHADERS", spvc_perf_shaders);
+    write_shaders(&mut shader_file, "SPVC_SIZE_SHADERS", spvc_size_shaders);
     write!(shader_file, "}}\n").unwrap();
 }
