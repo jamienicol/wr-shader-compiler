@@ -1,6 +1,7 @@
 use gleam::gl;
 use glutin::{Api, ContextBuilder, ControlFlow, Event, EventsLoop, GlRequest, WindowBuilder, WindowEvent};
 
+use std::collections::HashMap;
 use std::time::Instant;
 
 #[macro_use]
@@ -10,7 +11,7 @@ mod shader_source {
     include!(concat!(env!("OUT_DIR"), "/shaders.rs"));
 }
 
-fn compile_shader(gl: &dyn gl::Gl, shader: &shader_source::Shader) {
+fn compile_shader(gl: &dyn gl::Gl, shader: &shader_source::Shader) -> u128 {
     let start_time = Instant::now();
 
     let vert = gl.create_shader(gl::VERTEX_SHADER);
@@ -42,11 +43,13 @@ fn compile_shader(gl: &dyn gl::Gl, shader: &shader_source::Shader) {
     gl.link_program(prog);
 
     let end_time = Instant::now();
+    let elapsed_time = end_time.duration_since(start_time).as_micros();
 
     let mut link_status = [0];
     unsafe { gl.get_program_iv(prog, gl::LINK_STATUS, &mut link_status); }
+
     if link_status[0] != 0 {
-        println!("Compiling shader {} took {}ms", shader.name, end_time.duration_since(start_time).as_micros() as f32 / 1000.0);
+        println!("Compiling shader {} took {}ms", shader.name, elapsed_time as f32 / 1000.0);
     } else {
         let log = gl.get_program_info_log(prog);
         println!("Compiling shader {} failed: {}", shader.name, log);
@@ -57,6 +60,8 @@ fn compile_shader(gl: &dyn gl::Gl, shader: &shader_source::Shader) {
     gl.delete_shader(vert);
     gl.delete_shader(frag);
     gl.delete_program(prog);
+
+    elapsed_time
 }
 
 fn main() {
@@ -76,6 +81,8 @@ fn main() {
     // });
     gl.clear_color(0.0, 0.0, 0.0, 1.0);
 
+    let mut results: HashMap<&'static str, HashMap<&'static str, u128>> = HashMap::default();
+
     println!("Vendor: {}", gl.get_string(gl::VENDOR));
     println!("Renderer: {}", gl.get_string(gl::RENDERER));
     println!("Version: {}", gl.get_string(gl::VERSION));
@@ -83,31 +90,56 @@ fn main() {
     println!("\n");
     println!("Compiling unoptimised shaders");
     for shader in shader_source::ORIG_SHADERS.iter() {
-        compile_shader(gl.as_ref(), &shader);
+        let res = compile_shader(gl.as_ref(), &shader);
+        let row = results.entry(shader.name).or_default();
+        row.insert("orig", res);
     }
 
     println!("\n");
     println!("Compiling optimised shaders");
     for shader in shader_source::OPT_SHADERS.iter() {
-        compile_shader(gl.as_ref(), &shader);
+        let res = compile_shader(gl.as_ref(), &shader);
+        let row = results.entry(shader.name).or_default();
+        row.insert("glslopt", res);
     }
 
     println!("\n");
     println!("Compiling SPIRV-Cross shaders");
     for shader in shader_source::SPVC_SHADERS.iter() {
-        compile_shader(gl.as_ref(), &shader);
+        let res = compile_shader(gl.as_ref(), &shader);
+        let row = results.entry(shader.name).or_default();
+        row.insert("spvc_noopt", res);
     }
 
     println!("\n");
     println!("Compiling SPIRV-Cross (Perf) shaders");
     for shader in shader_source::SPVC_PERF_SHADERS.iter() {
-        compile_shader(gl.as_ref(), &shader);
+        let res = compile_shader(gl.as_ref(), &shader);
+        let row = results.entry(shader.name).or_default();
+        row.insert("spvc_perf", res);
     }
 
     println!("\n");
     println!("Compiling SPIRV-Cross (Size) shaders");
     for shader in shader_source::SPVC_SIZE_SHADERS.iter() {
-        compile_shader(gl.as_ref(), &shader);
+        let res = compile_shader(gl.as_ref(), &shader);
+        let row = results.entry(shader.name).or_default();
+        row.insert("spvc_size", res);
+    }
+
+    println!("\n");
+    println!("Final Results:");
+    println!("Shader,Original,glslopt,spirv-cross (no-opt),spirv-cross (perf-opt),spirv-cross (size-opt),");
+    for (shader_name, results) in &results {
+        println!(
+            "{},{},{},{},{},{},",
+            shader_name,
+            results.get("orig").map(|v| (*v as f64 / 1000.0).to_string()).unwrap_or("".to_string()),
+            results.get("glslopt").map(|v| (*v as f64 / 1000.0).to_string()).unwrap_or("".to_string()),
+            results.get("spvc_noopt").map(|v| (*v as f64 / 1000.0).to_string()).unwrap_or("".to_string()),
+            results.get("spvc_perf").map(|v| (*v as f64 / 1000.0).to_string()).unwrap_or("".to_string()),
+            results.get("spvc_size").map(|v| (*v as f64 / 1000.0).to_string()).unwrap_or("".to_string()),
+        );
     }
 
     event_loop.run_forever(|event| {
