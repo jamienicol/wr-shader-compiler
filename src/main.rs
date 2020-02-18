@@ -90,6 +90,11 @@ fn main() {
         compile_shader(gl.as_ref(), &shader);
     }
 
+    println!("Compiling SPIRV-Cross shaders");
+    for shader in shader_source::SPVC_SHADERS.iter() {
+        compile_shader(gl.as_ref(), &shader);
+    }
+
     event_loop.run_forever(|event| {
         match event {
             Event::WindowEvent { ref event, .. } => match event {
