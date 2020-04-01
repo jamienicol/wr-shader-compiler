@@ -89,56 +89,44 @@ fn main() {
 
     println!("\n");
     println!("Compiling unoptimised shaders");
-    for shader in shader_source::ORIG_SHADERS.iter() {
-        let res = compile_shader(gl.as_ref(), &shader);
-        let row = results.entry(shader.name).or_default();
-        row.insert("orig", res);
+    for shader in shader_source::UNOPT_SHADERS.iter() {
+        if shader.name.contains("_Gles") {
+            let res = compile_shader(gl.as_ref(), &shader);
+            let row = results.entry(shader.name).or_default();
+            row.insert("unopt", res);
+        }
     }
 
     println!("\n");
-    println!("Compiling optimised shaders");
-    for shader in shader_source::OPT_SHADERS.iter() {
-        let res = compile_shader(gl.as_ref(), &shader);
-        let row = results.entry(shader.name).or_default();
-        row.insert("glslopt", res);
+    println!("Compiling optimised not rebased shaders");
+    for shader in shader_source::OPT_NOREBASE_SHADERS.iter() {
+        if shader.name.contains("_Gles") {
+            let res = compile_shader(gl.as_ref(), &shader);
+            let row = results.entry(shader.name).or_default();
+            row.insert("glslopt-norebase", res);
+        }
     }
 
     println!("\n");
-    println!("Compiling SPIRV-Cross shaders");
-    for shader in shader_source::SPVC_SHADERS.iter() {
-        let res = compile_shader(gl.as_ref(), &shader);
-        let row = results.entry(shader.name).or_default();
-        row.insert("spvc_noopt", res);
-    }
-
-    println!("\n");
-    println!("Compiling SPIRV-Cross (Perf) shaders");
-    for shader in shader_source::SPVC_PERF_SHADERS.iter() {
-        let res = compile_shader(gl.as_ref(), &shader);
-        let row = results.entry(shader.name).or_default();
-        row.insert("spvc_perf", res);
-    }
-
-    println!("\n");
-    println!("Compiling SPIRV-Cross (Size) shaders");
-    for shader in shader_source::SPVC_SIZE_SHADERS.iter() {
-        let res = compile_shader(gl.as_ref(), &shader);
-        let row = results.entry(shader.name).or_default();
-        row.insert("spvc_size", res);
+    println!("Compiling optimised rebased shaders");
+    for shader in shader_source::OPT_REBASE_SHADERS.iter() {
+        if shader.name.contains("_Gles") {
+            let res = compile_shader(gl.as_ref(), &shader);
+            let row = results.entry(shader.name).or_default();
+            row.insert("glslopt-rebase", res);
+        }
     }
 
     println!("\n");
     println!("Final Results:");
-    println!("Shader,Original,glslopt,spirv-cross (no-opt),spirv-cross (perf-opt),spirv-cross (size-opt),");
+    println!("Shader,Unoptimized,glslopt norebase,glslopt rebase,");
     for (shader_name, results) in &results {
         println!(
-            "{},{},{},{},{},{},",
+            "{},{},{},{},",
             shader_name,
-            results.get("orig").map(|v| (*v as f64 / 1000.0).to_string()).unwrap_or("".to_string()),
-            results.get("glslopt").map(|v| (*v as f64 / 1000.0).to_string()).unwrap_or("".to_string()),
-            results.get("spvc_noopt").map(|v| (*v as f64 / 1000.0).to_string()).unwrap_or("".to_string()),
-            results.get("spvc_perf").map(|v| (*v as f64 / 1000.0).to_string()).unwrap_or("".to_string()),
-            results.get("spvc_size").map(|v| (*v as f64 / 1000.0).to_string()).unwrap_or("".to_string()),
+            results.get("unopt").map(|v| (*v as f64 / 1000.0).to_string()).unwrap_or("".to_string()),
+            results.get("glslopt-norebase").map(|v| (*v as f64 / 1000.0).to_string()).unwrap_or("".to_string()),
+            results.get("glslopt-rebase").map(|v| (*v as f64 / 1000.0).to_string()).unwrap_or("".to_string()),
         );
     }
 

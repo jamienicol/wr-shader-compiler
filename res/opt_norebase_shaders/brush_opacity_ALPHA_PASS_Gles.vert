@@ -1,0 +1,236 @@
+#version 300 es
+precision highp sampler2DArray;
+struct RectWithSize {
+  vec2 p0;
+  vec2 size;
+};
+uniform mat4 uTransform;
+in vec2 aPosition;
+uniform sampler2DArray sColor0;
+uniform highp sampler2D sRenderTasks;
+uniform highp sampler2D sGpuCache;
+flat out lowp vec4 vTransformBounds;
+uniform highp sampler2D sTransformPalette;
+flat out vec4 vClipMaskUvBounds;
+out highp vec4 vClipMaskUv;
+uniform highp sampler2D sPrimitiveHeadersF;
+uniform highp isampler2D sPrimitiveHeadersI;
+in highp ivec4 aData;
+flat out lowp vec4 flat_varying_vec4_1;
+flat out highp vec4 flat_varying_vec4_2;
+out lowp vec4 varying_vec4_0;
+void main ()
+{
+  highp int tmpvar_1;
+  highp int tmpvar_2;
+  highp int tmpvar_3;
+  highp int tmpvar_4;
+  tmpvar_1 = (aData.y >> 16);
+  tmpvar_2 = (aData.y & 65535);
+  tmpvar_3 = (aData.z & 65535);
+  tmpvar_4 = (aData.z >> 16);
+  highp float tmpvar_5;
+  highp ivec2 tmpvar_6;
+  highp uint tmpvar_7;
+  tmpvar_7 = uint(aData.x);
+  tmpvar_6.x = int((2u * (tmpvar_7 % 512u)));
+  tmpvar_6.y = int((tmpvar_7 / 512u));
+  highp vec4 tmpvar_8;
+  tmpvar_8 = texelFetch (sPrimitiveHeadersF, tmpvar_6, 0);
+  highp vec4 tmpvar_9;
+  tmpvar_9 = texelFetch (sPrimitiveHeadersF, (tmpvar_6 + ivec2(1, 0)), 0);
+  highp vec2 tmpvar_10;
+  highp vec2 tmpvar_11;
+  tmpvar_10 = tmpvar_8.xy;
+  tmpvar_11 = tmpvar_8.zw;
+  highp ivec2 tmpvar_12;
+  tmpvar_12.x = int((2u * (tmpvar_7 % 512u)));
+  tmpvar_12.y = int((tmpvar_7 / 512u));
+  highp ivec4 tmpvar_13;
+  tmpvar_13 = texelFetch (sPrimitiveHeadersI, tmpvar_12, 0);
+  highp ivec4 tmpvar_14;
+  tmpvar_14 = texelFetch (sPrimitiveHeadersI, (tmpvar_12 + ivec2(1, 0)), 0);
+  tmpvar_5 = float(tmpvar_13.x);
+  highp mat4 tmpvar_15;
+  bool tmpvar_16;
+  tmpvar_16 = ((tmpvar_13.z >> 24) == 0);
+  highp int tmpvar_17;
+  tmpvar_17 = (tmpvar_13.z & 16777215);
+  highp ivec2 tmpvar_18;
+  tmpvar_18.x = int((8u * (
+    uint(tmpvar_17)
+   % 128u)));
+  tmpvar_18.y = int((uint(tmpvar_17) / 128u));
+  tmpvar_15[0] = texelFetch (sTransformPalette, tmpvar_18, 0);
+  tmpvar_15[1] = texelFetch (sTransformPalette, (tmpvar_18 + ivec2(1, 0)), 0);
+  tmpvar_15[2] = texelFetch (sTransformPalette, (tmpvar_18 + ivec2(2, 0)), 0);
+  tmpvar_15[3] = texelFetch (sTransformPalette, (tmpvar_18 + ivec2(3, 0)), 0);
+  highp ivec2 tmpvar_19;
+  tmpvar_19.x = int((2u * (
+    uint(tmpvar_1)
+   % 512u)));
+  tmpvar_19.y = int((uint(tmpvar_1) / 512u));
+  highp vec4 tmpvar_20;
+  tmpvar_20 = texelFetch (sRenderTasks, tmpvar_19, 0);
+  highp vec4 tmpvar_21;
+  tmpvar_21 = texelFetch (sRenderTasks, (tmpvar_19 + ivec2(1, 0)), 0);
+  RectWithSize tmpvar_22;
+  highp float tmpvar_23;
+  highp float tmpvar_24;
+  highp vec2 tmpvar_25;
+  if ((tmpvar_2 >= 32767)) {
+    tmpvar_22 = RectWithSize(vec2(0.0, 0.0), vec2(0.0, 0.0));
+    tmpvar_23 = 0.0;
+    tmpvar_24 = 0.0;
+    tmpvar_25 = vec2(0.0, 0.0);
+  } else {
+    highp ivec2 tmpvar_26;
+    tmpvar_26.x = int((2u * (
+      uint(tmpvar_2)
+     % 512u)));
+    tmpvar_26.y = int((uint(tmpvar_2) / 512u));
+    highp vec4 tmpvar_27;
+    tmpvar_27 = texelFetch (sRenderTasks, tmpvar_26, 0);
+    highp vec4 tmpvar_28;
+    tmpvar_28 = texelFetch (sRenderTasks, (tmpvar_26 + ivec2(1, 0)), 0);
+    highp vec3 tmpvar_29;
+    tmpvar_29 = tmpvar_28.yzw;
+    tmpvar_22.p0 = tmpvar_27.xy;
+    tmpvar_22.size = tmpvar_27.zw;
+    tmpvar_23 = tmpvar_28.x;
+    tmpvar_24 = tmpvar_29.x;
+    tmpvar_25 = tmpvar_29.yz;
+  };
+  lowp vec2 tmpvar_30;
+  highp vec4 tmpvar_31;
+  highp vec2 tmpvar_32;
+  highp vec2 tmpvar_33;
+  highp int tmpvar_34;
+  tmpvar_34 = (tmpvar_4 & 255);
+  highp int tmpvar_35;
+  tmpvar_35 = ((tmpvar_4 >> 8) & 255);
+  if ((tmpvar_3 == 65535)) {
+    tmpvar_32 = tmpvar_10;
+    tmpvar_33 = tmpvar_11;
+  } else {
+    highp int tmpvar_36;
+    tmpvar_36 = ((tmpvar_13.y + 3) + (tmpvar_3 * 2));
+    highp ivec2 tmpvar_37;
+    tmpvar_37.x = int((uint(tmpvar_36) % 1024u));
+    tmpvar_37.y = int((uint(tmpvar_36) / 1024u));
+    highp vec4 tmpvar_38;
+    tmpvar_38 = texelFetch (sGpuCache, tmpvar_37, 0);
+    tmpvar_33 = tmpvar_38.zw;
+    tmpvar_32 = (tmpvar_38.xy + tmpvar_8.xy);
+  };
+  if (tmpvar_16) {
+    lowp vec2 tmpvar_39;
+    tmpvar_39 = clamp ((tmpvar_32 + (tmpvar_33 * aPosition)), tmpvar_9.xy, (tmpvar_9.xy + tmpvar_9.zw));
+    lowp vec4 tmpvar_40;
+    tmpvar_40.zw = vec2(0.0, 1.0);
+    tmpvar_40.xy = tmpvar_39;
+    highp vec4 tmpvar_41;
+    tmpvar_41 = (tmpvar_15 * tmpvar_40);
+    highp vec4 tmpvar_42;
+    tmpvar_42.xy = ((tmpvar_41.xy * tmpvar_21.y) + ((
+      -(tmpvar_21.zw)
+     + tmpvar_20.xy) * tmpvar_41.w));
+    tmpvar_42.z = (tmpvar_5 * tmpvar_41.w);
+    tmpvar_42.w = tmpvar_41.w;
+    gl_Position = (uTransform * tmpvar_42);
+    tmpvar_30 = tmpvar_39;
+    tmpvar_31 = tmpvar_41;
+    vTransformBounds = vec4(-1e+16, -1e+16, 1e+16, 1e+16);
+  } else {
+    lowp vec4 tmpvar_43;
+    tmpvar_43 = mix(vec4(0.0, 0.0, 0.0, 0.0), vec4(1.0, 1.0, 1.0, 1.0), bvec4(notEqual ((tmpvar_34 & ivec4(1, 2, 4, 8)), ivec4(0, 0, 0, 0))));
+    lowp vec2 tmpvar_44;
+    lowp vec2 tmpvar_45;
+    tmpvar_44 = tmpvar_32;
+    tmpvar_45 = tmpvar_33;
+    highp vec2 tmpvar_46;
+    tmpvar_46 = (tmpvar_9.xy + tmpvar_9.zw);
+    lowp vec2 tmpvar_47;
+    tmpvar_47 = clamp (tmpvar_44, tmpvar_9.xy, tmpvar_46);
+    lowp vec2 tmpvar_48;
+    tmpvar_48 = clamp ((tmpvar_44 + tmpvar_45), tmpvar_9.xy, tmpvar_46);
+    lowp vec4 tmpvar_49;
+    tmpvar_49 = (vec4(2.0, 2.0, 2.0, 2.0) * tmpvar_43);
+    tmpvar_44 = (tmpvar_44 - tmpvar_49.xy);
+    tmpvar_45 = (tmpvar_45 + (tmpvar_49.xy + tmpvar_49.zw));
+    lowp vec2 tmpvar_50;
+    tmpvar_50 = (tmpvar_44 + (tmpvar_45 * aPosition));
+    lowp vec4 tmpvar_51;
+    tmpvar_51.zw = vec2(0.0, 1.0);
+    tmpvar_51.xy = tmpvar_50;
+    highp vec4 tmpvar_52;
+    tmpvar_52 = (tmpvar_15 * tmpvar_51);
+    highp vec4 tmpvar_53;
+    tmpvar_53.xy = ((tmpvar_52.xy * tmpvar_21.y) + ((tmpvar_20.xy - tmpvar_21.zw) * tmpvar_52.w));
+    tmpvar_53.z = (tmpvar_5 * tmpvar_52.w);
+    tmpvar_53.w = tmpvar_52.w;
+    gl_Position = (uTransform * tmpvar_53);
+    highp vec4 tmpvar_54;
+    tmpvar_54.xy = clamp (tmpvar_8.xy, tmpvar_9.xy, tmpvar_46);
+    tmpvar_54.zw = clamp ((tmpvar_8.xy + tmpvar_8.zw), tmpvar_9.xy, tmpvar_46);
+    lowp vec4 tmpvar_55;
+    tmpvar_55.xy = tmpvar_47;
+    tmpvar_55.zw = tmpvar_48;
+    vTransformBounds = mix (tmpvar_54, tmpvar_55, tmpvar_43);
+    tmpvar_30 = tmpvar_50;
+    tmpvar_31 = tmpvar_52;
+  };
+  vec4 tmpvar_56;
+  tmpvar_56.xy = tmpvar_22.p0;
+  tmpvar_56.zw = (tmpvar_22.p0 + tmpvar_22.size);
+  vClipMaskUvBounds = tmpvar_56;
+  highp vec4 tmpvar_57;
+  tmpvar_57.xy = ((tmpvar_31.xy * tmpvar_24) + (tmpvar_31.w * (tmpvar_22.p0 - tmpvar_25)));
+  tmpvar_57.z = tmpvar_23;
+  tmpvar_57.w = tmpvar_31.w;
+  vClipMaskUv = tmpvar_57;
+  highp vec2 tmpvar_58;
+  highp vec2 tmpvar_59;
+  highp ivec2 tmpvar_60;
+  tmpvar_60.x = int((uint(tmpvar_14.x) % 1024u));
+  tmpvar_60.y = int((uint(tmpvar_14.x) / 1024u));
+  highp vec4 tmpvar_61;
+  tmpvar_61 = texelFetch (sGpuCache, tmpvar_60, 0);
+  tmpvar_58 = tmpvar_61.xy;
+  tmpvar_59 = tmpvar_61.zw;
+  highp float tmpvar_62;
+  tmpvar_62 = texelFetch (sGpuCache, (tmpvar_60 + ivec2(1, 0)), 0).x;
+  lowp vec2 tmpvar_63;
+  tmpvar_63 = vec2(textureSize (sColor0, 0).xy);
+  lowp vec2 tmpvar_64;
+  tmpvar_64 = ((tmpvar_30 - tmpvar_8.xy) / tmpvar_8.zw);
+  lowp vec2 tmpvar_65;
+  highp int address_66;
+  address_66 = (tmpvar_14.x + 2);
+  highp ivec2 tmpvar_67;
+  tmpvar_67.x = int((uint(address_66) % 1024u));
+  tmpvar_67.y = int((uint(address_66) / 1024u));
+  highp vec4 tmpvar_68;
+  tmpvar_68 = mix (mix (texelFetch (sGpuCache, tmpvar_67, 0), texelFetch (sGpuCache, (tmpvar_67 + ivec2(1, 0)), 0), tmpvar_64.x), mix (texelFetch (sGpuCache, (tmpvar_67 + ivec2(2, 0)), 0), texelFetch (sGpuCache, (tmpvar_67 + ivec2(3, 0)), 0), tmpvar_64.x), tmpvar_64.y);
+  tmpvar_65 = (tmpvar_68.xy / tmpvar_68.w);
+  lowp vec2 tmpvar_69;
+  tmpvar_69 = mix (tmpvar_61.xy, tmpvar_61.zw, tmpvar_65);
+  highp float tmpvar_70;
+  if (((tmpvar_35 & 1) != 0)) {
+    tmpvar_70 = 1.0;
+  } else {
+    tmpvar_70 = 0.0;
+  };
+  highp float tmpvar_71;
+  tmpvar_71 = mix (tmpvar_31.w, 1.0, tmpvar_70);
+  varying_vec4_0.zw = ((tmpvar_69 / tmpvar_63) * tmpvar_71);
+  flat_varying_vec4_2.x = tmpvar_62;
+  flat_varying_vec4_2.y = tmpvar_70;
+  highp vec4 tmpvar_72;
+  tmpvar_72.xy = tmpvar_58;
+  tmpvar_72.zw = tmpvar_59;
+  flat_varying_vec4_1 = (tmpvar_72 / tmpvar_63.xyxy);
+  varying_vec4_0.xy = tmpvar_30;
+  flat_varying_vec4_2.z = (float(tmpvar_14.y) / 65536.0);
+}
+

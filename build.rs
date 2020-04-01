@@ -27,65 +27,41 @@ fn write_shaders(shader_file: &mut File, name: &str, shaders: Vec<PathBuf>) {
 }
 
 fn main() {
-    let mut orig_shaders = Vec::new();
-    let orig_shaders_dir = Path::new("res/orig_shaders");
-    for entry in read_dir(orig_shaders_dir).unwrap() {
+    let mut unopt_shaders = Vec::new();
+    let unopt_shaders_dir = Path::new("res/unopt_shaders");
+    for entry in read_dir(unopt_shaders_dir).unwrap() {
         let entry = entry.unwrap();
         let path = entry.path();
 
         if entry.file_name().to_str().unwrap().ends_with(".vert") {
-            orig_shaders.push(path.to_owned());
+            unopt_shaders.push(path.to_owned());
         }
     }
-    orig_shaders.sort_by(|a, b| a.file_name().cmp(&b.file_name()));
+    unopt_shaders.sort_by(|a, b| a.file_name().cmp(&b.file_name()));
 
-    let mut opt_shaders = Vec::new();
-    let orig_shaders_dir = Path::new("res/opt_shaders");
-    for entry in read_dir(orig_shaders_dir).unwrap() {
+    let mut opt_norebase_shaders = Vec::new();
+    let opt_norebase_shaders_dir = Path::new("res/opt_norebase_shaders");
+    for entry in read_dir(opt_norebase_shaders_dir).unwrap() {
         let entry = entry.unwrap();
         let path = entry.path();
 
         if entry.file_name().to_str().unwrap().ends_with(".vert") {
-            opt_shaders.push(path.to_owned());
+            opt_norebase_shaders.push(path.to_owned());
         }
     }
-    opt_shaders.sort_by(|a, b| a.file_name().cmp(&b.file_name()));
+    opt_norebase_shaders.sort_by(|a, b| a.file_name().cmp(&b.file_name()));
 
-    let mut spvc_shaders = Vec::new();
-    let orig_shaders_dir = Path::new("res/spvc_shaders");
-    for entry in read_dir(orig_shaders_dir).unwrap() {
+    let mut opt_rebase_shaders = Vec::new();
+    let opt_rebase_shaders_dir = Path::new("res/opt_rebase_shaders");
+    for entry in read_dir(opt_rebase_shaders_dir).unwrap() {
         let entry = entry.unwrap();
         let path = entry.path();
 
         if entry.file_name().to_str().unwrap().ends_with(".vert") {
-            spvc_shaders.push(path.to_owned());
+            opt_rebase_shaders.push(path.to_owned());
         }
     }
-    spvc_shaders.sort_by(|a, b| a.file_name().cmp(&b.file_name()));
-
-    let mut spvc_perf_shaders = Vec::new();
-    let orig_shaders_dir = Path::new("res/spvc_perf_shaders");
-    for entry in read_dir(orig_shaders_dir).unwrap() {
-        let entry = entry.unwrap();
-        let path = entry.path();
-
-        if entry.file_name().to_str().unwrap().ends_with(".vert") {
-            spvc_perf_shaders.push(path.to_owned());
-        }
-    }
-    spvc_perf_shaders.sort_by(|a, b| a.file_name().cmp(&b.file_name()));
-
-    let mut spvc_size_shaders = Vec::new();
-    let orig_shaders_dir = Path::new("res/spvc_size_shaders");
-    for entry in read_dir(orig_shaders_dir).unwrap() {
-        let entry = entry.unwrap();
-        let path = entry.path();
-
-        if entry.file_name().to_str().unwrap().ends_with(".vert") {
-            spvc_size_shaders.push(path.to_owned());
-        }
-    }
-    spvc_size_shaders.sort_by(|a, b| a.file_name().cmp(&b.file_name()));
+    opt_rebase_shaders.sort_by(|a, b| a.file_name().cmp(&b.file_name()));
 
     let out_dir = env::var_os("OUT_DIR").unwrap();
     let shader_file_path = Path::new(&out_dir).join("shaders.rs");
@@ -93,10 +69,8 @@ fn main() {
 
     write!(shader_file, "pub struct Shader {{ pub name: &'static str, pub vert: &'static str, pub frag: &'static str }}\n\n").unwrap();
     write!(shader_file, "lazy_static! {{\n").unwrap();
-    write_shaders(&mut shader_file, "ORIG_SHADERS", orig_shaders);
-    write_shaders(&mut shader_file, "OPT_SHADERS", opt_shaders);
-    write_shaders(&mut shader_file, "SPVC_SHADERS", spvc_shaders);
-    write_shaders(&mut shader_file, "SPVC_PERF_SHADERS", spvc_perf_shaders);
-    write_shaders(&mut shader_file, "SPVC_SIZE_SHADERS", spvc_size_shaders);
+    write_shaders(&mut shader_file, "UNOPT_SHADERS", unopt_shaders);
+    write_shaders(&mut shader_file, "OPT_NOREBASE_SHADERS", opt_norebase_shaders);
+    write_shaders(&mut shader_file, "OPT_REBASE_SHADERS", opt_rebase_shaders);
     write!(shader_file, "}}\n").unwrap();
 }
